@@ -4,9 +4,13 @@
  */
 package outils;
 
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 /**
  *
@@ -50,4 +54,20 @@ public class Utilitaire {
         }
         return date_retour;
     }
+    
+    
+    public Connection connecter() throws Exception {
+        Context initCtx, envCtx;
+        DataSource ds;
+        Connection connection;
+        try {
+            initCtx = new InitialContext();
+            envCtx = (Context) initCtx.lookup("java:comp/env");
+            ds = (DataSource) envCtx.lookup("jdbc/GestPers");
+            connection = ds.getConnection();
+            return (connection);
+        } catch (Exception e) {
+            throw e;
+        }
+    }    
 }

@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.html.HTML;
 import modeles.*;
+import org.apache.tomcat.util.net.SSLSupport;
 
 /**
  *
@@ -150,8 +152,8 @@ public class slOeuvres extends HttpServlet {
     private String connecter(HttpServletRequest request) throws Exception {
         String vueReponse;
         try {
+            request.getSession(true).setAttribute("userId", request.getParameter("txtLogin"));
             vueReponse = "/home.jsp";
-           
             return (vueReponse);
         } catch (Exception e) {
             throw e;
@@ -160,7 +162,7 @@ public class slOeuvres extends HttpServlet {
 
     private String deconnecter(HttpServletRequest request) throws Exception {
         try {
-            
+            request.getSession(true).setAttribute("userId", null);
             return ("/home.jsp");
         } catch (Exception e) {
             throw e;
@@ -173,7 +175,7 @@ public class slOeuvres extends HttpServlet {
      * @return
      * @throws Exception 
      */
-    private String login(HttpServletRequest request) throws Exception {
+        private String login(HttpServletRequest request) throws Exception {
         try {
             return ("/login.jsp");
         } catch (Exception e) {
