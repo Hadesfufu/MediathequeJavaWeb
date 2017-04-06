@@ -54,20 +54,19 @@ public class Utilitaire {
         }
         return date_retour;
     }
-    
-    
-    public Connection connecter() throws Exception {
-        Context initCtx, envCtx;
-        DataSource ds;
-        Connection connection;
-        try {
-            initCtx = new InitialContext();
-            envCtx = (Context) initCtx.lookup("java:comp/env");
-            ds = (DataSource) envCtx.lookup("jdbc/GestPers");
-            connection = ds.getConnection();
-            return (connection);
-        } catch (Exception e) {
-            throw e;
+
+        public static Connection connecter() throws Exception {
+            Context initCtx, envCtx;
+            DataSource ds;
+            Connection connection;
+            try {
+                initCtx = new InitialContext();
+                envCtx = (Context) initCtx.lookup("java:comp/env");
+                ds = (DataSource) envCtx.lookup("jdbc/Oeuvres");
+                connection = ds.getConnection();
+                return (connection);
+            } catch (Exception e) {
+                throw e;
+            }
         }
-    }    
 }

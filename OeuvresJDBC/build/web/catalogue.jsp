@@ -15,12 +15,10 @@
             </tr>  
         </thead>
         <tbody>
-            <c:forEach >
+            <c:forEach var="oeuvre" items="lOeuvres">
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>lol</td>
+                    <!--<td>${oeuvre.titre}</td> -->
                     <td><a class="btn btn-primary" href="">Réserver</a></td>
                     <td><a class="btn btn-primary" href="">Modifier</a></td> 
                     <td><a class="btn btn-primary" onclick="javascript:if (confirm('Suppression confirmée ?')){ window.location='';}">Supprimer</a></td>                     

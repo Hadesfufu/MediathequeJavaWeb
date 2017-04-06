@@ -5,6 +5,10 @@
 package controleurs;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import javax.swing.text.html.HTML;
 import modeles.*;
 import org.apache.tomcat.util.net.SSLSupport;
+import outils.Utilitaire;
 
 /**
  *
@@ -53,7 +58,9 @@ public class slOeuvres extends HttpServlet {
                 vueReponse = listerOeuvres(request);
             } else if (demande.equalsIgnoreCase("supprimer.oe")) {
                 vueReponse = supprimerOeuvre(request);
-            }  
+            } else{
+                throw(new Exception());
+            }
         } catch (Exception e) {
             erreur = e.getMessage();
         } finally {
@@ -190,10 +197,26 @@ public class slOeuvres extends HttpServlet {
      */
     private String listerOeuvres(HttpServletRequest request) throws Exception {
         
+        Connection cnx;
+        PreparedStatement ps;
+        ResultSet rs;
+        ArrayList<Oeuvre> lOeuvre = new ArrayList<Oeuvre>();
         try {
-
+            cnx = Utilitaire.connecter();
+            ps = cnx.prepareStatement("select * from oeuvre");
+            rs = ps.executeQuery();
+            while(rs.next()){
+                Oeuvre oeuvre = new Oeuvre();
+                oeuvre.setId_oeuvre(rs.getInt("id_oeuvre"));
+                oeuvre.setId_proprietaire(rs.getInt("id_proprietaire"));
+                oeuvre.setTitre(rs.getString("titre"));
+                oeuvre.setPrix(rs.getDouble("prix"));
+                lOeuvre.add(oeuvre);
+            }
+            request.setAttribute("lOeuvres", lOeuvre);    
             return ("/catalogue.jsp");
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
     }
