@@ -15,10 +15,12 @@
             </tr>  
         </thead>
         <tbody>
-            <c:forEach var="oeuvre" items="lOeuvres">
+            <c:forEach items="${lOeuvres}" var="oeuvre">
                 <tr>
-                    <td>lol</td>
-                    <!--<td>${oeuvre.titre}</td> -->
+                    <td>${oeuvre.getTitre()}</td>
+                    <td>${oeuvre.getPrix()}</td>
+                    <td>${oeuvre.getProprietaire().getPrenom_proprietaire()}</td>
+                    <td>${oeuvre.getProprietaire().getNom_proprietaire()}</td>
                     <td><a class="btn btn-primary" href="">Réserver</a></td>
                     <td><a class="btn btn-primary" href="">Modifier</a></td> 
                     <td><a class="btn btn-primary" onclick="javascript:if (confirm('Suppression confirmée ?')){ window.location='';}">Supprimer</a></td>                     
