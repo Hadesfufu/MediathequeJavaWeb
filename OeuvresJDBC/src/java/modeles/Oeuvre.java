@@ -68,7 +68,7 @@ public class Oeuvre {
             oeuvre = new Oeuvre();
             
             connection = Utilitaire.connecter();
-            ps = connection.prepareStatement("SELECT * FROM oeuvre where id = ?");
+            ps = connection.prepareStatement("SELECT * FROM oeuvre where id_oeuvre = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
