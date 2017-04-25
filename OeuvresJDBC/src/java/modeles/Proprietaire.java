@@ -62,7 +62,7 @@ public class Proprietaire {
             proprietaire = new Proprietaire();
             
             connection = Utilitaire.connecter();
-            ps = connection.prepareStatement("SELECT * FROM oeuvre where id = ?");
+            ps = connection.prepareStatement("SELECT * FROM proprietaire where id = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
