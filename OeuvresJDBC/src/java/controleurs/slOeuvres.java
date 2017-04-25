@@ -219,6 +219,10 @@ public class slOeuvres extends HttpServlet {
                 oeuvre.setId_proprietaire(rs.getInt("id_proprietaire"));
                 oeuvre.setTitre(rs.getString("titre"));
                 oeuvre.setPrix(rs.getDouble("prix"));
+                
+                oeuvre.setProprietaire(Proprietaire.getProprietaireByID(oeuvre.getId_proprietaire()));
+                
+                
                 lOeuvre.add(oeuvre);
             }
             request.setAttribute("lOeuvres", lOeuvre);    

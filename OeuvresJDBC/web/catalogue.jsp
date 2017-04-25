@@ -19,7 +19,7 @@
                 <tr>
                     <td>${oeuvre.getTitre()}</td>
                     <td>${oeuvre.getPrix()}</td>
-                    <td>${getProprietaireByID(oeuvre.getProprietaire())}</td>
+                    <td>${oeuvre.getProprietaire().getPrenom_proprietaire()}</td>
                     <td>${oeuvre.getProprietaire().getNom_proprietaire()}</td>
                     <td><a class="btn btn-primary" href="">Réserver</a></td>
                     <td><a class="btn btn-primary" href="">Modifier</a></td> 
