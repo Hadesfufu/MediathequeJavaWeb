@@ -158,8 +158,15 @@ public class slOeuvres extends HttpServlet {
      */
     private String connecter(HttpServletRequest request) throws Exception {
         String vueReponse;
-        try {
-            request.getSession(true).setAttribute("userId", request.getParameter("txtLogin"));
+        Connection cnx;
+        PreparedStatement ps;
+        ResultSet rs;
+        try{
+            cnx = Utilitaire.connecter();
+            ps = cnx.prepareStatement("select * from proprietaire where login = '" + request.getParameter("txtLogin") + "' and pwd = '" + request.getParameter("txtPwd") + "'");
+            rs = ps.executeQuery();
+            if(rs.next())
+                request.getSession(true).setAttribute("userId", request.getParameter("txtLogin"));
             vueReponse = "/home.jsp";
             return (vueReponse);
         } catch (Exception e) {
