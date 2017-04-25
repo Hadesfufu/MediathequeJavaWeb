@@ -170,6 +170,7 @@ public class slOeuvres extends HttpServlet {
             vueReponse = "/home.jsp";
             return (vueReponse);
         } catch (Exception e) {
+            
             throw e;
         }
     }
