@@ -18,11 +18,10 @@
              <c:forEach items="${lReservationsR}" var="resa">
                 <tr>
                     <td>${resa.getOeuvre().getTitre()}</td>
-
                     <td>${resa.getOeuvre().getTitre()}</td>
                     <td>${resa.getStatut()}</td>
+                    <td>${resa.getAdherent().getPrenom_adherent()}</td>
                     <td>${resa.getAdherent().getNom_adherent()}</td>
-                    <td>${oeuvre.getProprietaire().getNom_proprietaire()}</td>
                     <td></td>
                     <td></td>
                     <td></td>                  
