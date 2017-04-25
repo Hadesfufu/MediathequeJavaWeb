@@ -21,8 +21,8 @@
 
                     <td>${resa.getOeuvre().getTitre()}</td>
                     <td>${resa.getStatut()}</td>
-                    <!--<td>${oeuvre.getProprietaire().getPrenom_proprietaire()}</td>-->
-                    <!--<td>${oeuvre.getProprietaire().getNom_proprietaire()}</td>-->
+                    <td>${oeuvre.getProprietaire().getPrenom_proprietaire()}</td>
+                    <td>${oeuvre.getProprietaire().getNom_proprietaire()}</td>
                     <td></td>
                     <td></td>
                     <td></td>                  

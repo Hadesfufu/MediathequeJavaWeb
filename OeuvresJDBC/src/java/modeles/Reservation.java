@@ -95,7 +95,7 @@ public class Reservation {
                 reservation.setDate_reservation(rs.getDate("date_reservation"));
                 reservation.setStatut(rs.getString("statut"));
                
-                reservation.setOeuvre(new Oeuvre(reservation.getId_oeuvre()));
+                reservation.setOeuvre(Oeuvre.getOeuvreByID(reservation.getId_oeuvre()));
                 lReservations.add(reservation);
             }
             return (lReservations);

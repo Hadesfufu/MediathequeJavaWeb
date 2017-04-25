@@ -1,6 +1,15 @@
 package modeles;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import outils.Utilitaire;
+
 public class Proprietaire {
+
+    
 
     private int id_proprietaire;
     private String nom_proprietaire;
@@ -44,5 +53,48 @@ public class Proprietaire {
     }
     // </editor-fold> 
 
-
+    public static Proprietaire getProprietaireByID(int id) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = null;
+        Proprietaire proprietaire = null;
+        try {
+            proprietaire = new Proprietaire();
+            
+            connection = Utilitaire.connecter();
+            ps = connection.prepareStatement("SELECT * FROM oeuvre where id = ?");
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                proprietaire.setId_proprietaire(rs.getInt("id_proprietaire"));
+                proprietaire.setNom_proprietaire(rs.getString("nom_proprietaire"));
+                proprietaire.setPrenom_proprietaire(rs.getString("prenom_proprietaire"));
+                proprietaire.setLogin(rs.getString("login"));
+                proprietaire.setPwd(rs.getString("pwd"));
+                
+            }
+            
+        } catch (Exception e) {
+            try {
+                throw e;
+            } catch (Exception ex) {
+                Logger.getLogger(Oeuvre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return proprietaire;
+        }
+    }
 }

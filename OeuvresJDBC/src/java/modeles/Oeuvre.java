@@ -20,9 +20,9 @@ public class Oeuvre {
     public Oeuvre() {
     }
     
-    public Oeuvre(int id) {
-        getOeuvreByID(id);
-    }
+//    public Oeuvre(int id) {
+//        getOeuvreByID(id);
+//    }
     // <editor-fold desc="Propriétés"> 
     public int getId_oeuvre() {
         return id_oeuvre;
@@ -58,7 +58,7 @@ public class Oeuvre {
     }
     // </editor-fold> 
 
-    private void getOeuvreByID(int id) {
+    public static Oeuvre getOeuvreByID(int id) {
         
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -77,7 +77,7 @@ public class Oeuvre {
                 oeuvre.setTitre(rs.getString("titre"));
                 oeuvre.setPrix(rs.getDouble("prix"));
                 
-                //oeuvre.setProprietaire(rs.getDouble("prix"));
+                oeuvre.setProprietaire(Proprietaire.getProprietaireByID(rs.getInt("id_proprietaire")));
             }
             
         } catch (Exception e) {
@@ -100,6 +100,7 @@ public class Oeuvre {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            return oeuvre;
         }
         
     }
