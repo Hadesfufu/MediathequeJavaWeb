@@ -41,7 +41,7 @@ public class Adherent {
     // </editor-fold> 
     
     public static Adherent getAdherentByID(int id) {
-        
+        System.out.println("modeles.Adherent.getAdherentByID() id : "  + id );
         PreparedStatement ps = null;
         ResultSet rs = null;
         Connection connection = null;
@@ -50,7 +50,7 @@ public class Adherent {
             adherent = new Adherent();
             
             connection = Utilitaire.connecter();
-            ps = connection.prepareStatement("SELECT * FROM adherent where id = ?");
+            ps = connection.prepareStatement("SELECT * FROM adherent where id_adherent = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
