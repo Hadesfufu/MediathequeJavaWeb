@@ -15,17 +15,19 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach >
+             <c:forEach items="${lReservationsR}" var="resa">
                 <tr>
+                    <td>${resa.getOeuvre().getTitre()}</td>
+
+                    <td>${resa.getOeuvre().getTitre()}</td>
+                    <td>${resa.getStatut()}</td>
+                    <!--<td>${oeuvre.getProprietaire().getPrenom_proprietaire()}</td>-->
+                    <!--<td>${oeuvre.getProprietaire().getNom_proprietaire()}</td>-->
                     <td></td>
-                    <td><fmt:formatDate value="" type="date" pattern="yyyy-MM-dd"/></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><a class="btn btn-primary" href="confirmerReservation.res?id= &dateres='<fmt:formatDate value="" type="date" pattern="yyyy-MM-dd"/>'">Confirmer</a></td>
-                    <td><a class="btn btn-primary" href="supprimerReservation.res?id= &dateres='<fmt:formatDate value=" " type="date" pattern="yyyy-MM-dd"/>'">Supprimer</a></td>                    
+                    <td></td>                  
                 </tr>
-            </c:forEach>                    
+            </c:forEach>                     
         </tbody>
     </table>              
 </div>

@@ -1,5 +1,14 @@
 package modeles;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import outils.Utilitaire;
+
 public class Oeuvre {
 
     private int id_oeuvre;
@@ -9,6 +18,10 @@ public class Oeuvre {
     private Proprietaire proprietaire;
 
     public Oeuvre() {
+    }
+    
+    public Oeuvre(int id) {
+        getOeuvreByID(id);
     }
     // <editor-fold desc="Propriétés"> 
     public int getId_oeuvre() {
@@ -44,5 +57,51 @@ public class Oeuvre {
         this.prix = prix;
     }
     // </editor-fold> 
+
+    private void getOeuvreByID(int id) {
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = null;
+        Oeuvre oeuvre = null;
+        try {
+            oeuvre = new Oeuvre();
+            
+            connection = Utilitaire.connecter();
+            ps = connection.prepareStatement("SELECT * FROM oeuvre where id = ?");
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                oeuvre.setId_oeuvre(rs.getInt("id_oeuvre"));
+                oeuvre.setId_proprietaire(rs.getInt("id_proprietaire"));
+                oeuvre.setTitre(rs.getString("titre"));
+                oeuvre.setPrix(rs.getDouble("prix"));
+                
+                //oeuvre.setProprietaire(rs.getDouble("prix"));
+            }
+            
+        } catch (Exception e) {
+            try {
+                throw e;
+            } catch (Exception ex) {
+                Logger.getLogger(Oeuvre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+    }
 
 }

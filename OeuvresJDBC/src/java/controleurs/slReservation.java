@@ -97,7 +97,14 @@ public class slReservation extends HttpServlet {
      */
     private String listeReservations(HttpServletRequest request) throws Exception {
         
+        Reservation resa;
+        String pageReponse;
         try {
+            pageReponse = "";
+            resa = new Reservation();
+            request.setAttribute("lReservationsR", resa.liste());
+            pageReponse = "/liste.jsp";
+            
 
             return ("/listereservations.jsp");
         } catch (Exception e) {

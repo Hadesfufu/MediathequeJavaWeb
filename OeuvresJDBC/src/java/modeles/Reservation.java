@@ -1,5 +1,12 @@
 package modeles;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import outils.Utilitaire;
+
 public class Reservation {
 
     private int id_oeuvre;
@@ -69,6 +76,46 @@ public class Reservation {
     }
     // </editor-fold> 
 
-
+    public List<Reservation>  liste() throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = null;
+        Reservation reservation;
+        List<Reservation> lReservations = null;
+        try {
+            lReservations = new ArrayList<Reservation>();
+            
+            connection = Utilitaire.connecter();
+            ps = connection.prepareStatement("SELECT * FROM reservation");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                reservation = new Reservation();
+                reservation.setId_oeuvre(rs.getInt("id_oeuvre"));
+                reservation.setId_adherent(rs.getInt("id_adherent"));
+                reservation.setDate_reservation(rs.getDate("date_reservation"));
+                reservation.setStatut(rs.getString("statut"));
+               
+                reservation.setOeuvre(new Oeuvre(reservation.getId_oeuvre()));
+                lReservations.add(reservation);
+            }
+            return (lReservations);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
