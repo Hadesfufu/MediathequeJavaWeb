@@ -22,9 +22,8 @@
                     <td>${resa.getStatut()}</td>
                     <td>${resa.getAdherent().getPrenom_adherent()}</td>
                     <td>${resa.getAdherent().getNom_adherent()}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>                  
+                    <td><a class="btn btn-primary" onclick="javascript:if (confirm('Confirmer la réservation ?')){ window.location='confirmerReservation.res';}" >Confirmer</a></td>
+                    <td><a class="btn btn-primary" onclick="javascript:if (confirm('Suppression confirmée ?')){ window.location='supprimerReservation.res';}" >Supprimer</a></td>                
                 </tr>
             </c:forEach>                     
         </tbody>
