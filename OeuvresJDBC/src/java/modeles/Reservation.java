@@ -96,6 +96,7 @@ public class Reservation {
                 reservation.setStatut(rs.getString("statut"));
                
                 reservation.setOeuvre(Oeuvre.getOeuvreByID(reservation.getId_oeuvre()));
+                reservation.setAdherent(Adherent.getAdherentByID(reservation.getId_adherent()));
                 lReservations.add(reservation);
             }
             return (lReservations);
