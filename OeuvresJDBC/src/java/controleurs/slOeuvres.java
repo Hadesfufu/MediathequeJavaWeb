@@ -85,7 +85,7 @@ public class slOeuvres extends HttpServlet {
         String vueReponse;
 
         try {
-
+//TODO
             vueReponse = "catalogue.oe";
             return (vueReponse);
         } catch (Exception e) {
@@ -99,11 +99,34 @@ public class slOeuvres extends HttpServlet {
      * @return String page de redirection
      * @throws Exception
      */
-    private String modifierOeuvre(HttpServletRequest request) throws Exception {
-
+    private String modifierOeuvre(HttpServletRequest request) throws Exception 
+    {
         String vueReponse;
-        try {
+        Connection cnx;
+        PreparedStatement ps;
+        ResultSet rs;
+        
+        ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
+       
+        try 
+        {
+            cnx = Utilitaire.connecter();
+            ps = cnx.prepareStatement("select * from oeuvre where id_oeuvre = '" + request.getParameter("Id")+"' ");
+            rs = ps.executeQuery();
+            
+            Oeuvre oeuvre = new Oeuvre();
+            if(rs.next())
+            {
+                oeuvre.setId_oeuvre(rs.getInt("id_oeuvre"));
+                oeuvre.setId_proprietaire(rs.getInt("id_proprietaire"));
+                oeuvre.setTitre(rs.getString("titre"));
+                oeuvre.setPrix(rs.getDouble("prix"));
 
+                oeuvre.setProprietaire(Proprietaire.getProprietaireByID(oeuvre.getId_proprietaire()));  
+            }
+            request.setAttribute("titre", "Modifier l'oeuvre "+request.getParameter("Id")+"");    
+            request.setAttribute("oeuvre", oeuvre); 
+            
             vueReponse = "/oeuvre.jsp";
             return (vueReponse);
         } catch (Exception e) {
@@ -120,7 +143,7 @@ public class slOeuvres extends HttpServlet {
     private String supprimerOeuvre(HttpServletRequest request) throws Exception {
         String vueReponse;
         try {
-
+//TODO
             vueReponse = "catalogue.oe";           
             return (vueReponse);  
         } catch (Exception e) {
@@ -162,6 +185,7 @@ public class slOeuvres extends HttpServlet {
                 lProprietaire.add(proprietaire);
             }
             request.setAttribute("lProprietaires", lProprietaire);    
+            request.setAttribute("titre", "Ajouter une oeuvre");    
 
             vueReponse = "/oeuvre.jsp";
             return (vueReponse);
