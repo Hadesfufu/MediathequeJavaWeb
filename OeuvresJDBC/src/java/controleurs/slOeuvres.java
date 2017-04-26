@@ -138,14 +138,36 @@ public class slOeuvres extends HttpServlet {
      * @return String page de redirection
      * @throws Exception
      */
-    private String creerOeuvre(HttpServletRequest request) throws Exception {
-
+    private String creerOeuvre(HttpServletRequest request) throws Exception 
+    {
         String vueReponse;
-        try {
+        Connection cnx;
+        PreparedStatement ps;
+        ResultSet rs;
+        
+        ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
+        
+        try 
+        {
+            cnx = Utilitaire.connecter();
+            ps = cnx.prepareStatement("select * from proprietaire");
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+                Proprietaire proprietaire = new Proprietaire();
+                proprietaire.setId_proprietaire(rs.getInt("id_proprietaire"));
+                proprietaire.setNom_proprietaire(rs.getString("nom_proprietaire"));
+                proprietaire.setPrenom_proprietaire(rs.getString("prenom_proprietaire"));
+                
+                lProprietaire.add(proprietaire);
+            }
+            request.setAttribute("lProprietaires", lProprietaire);    
 
             vueReponse = "/oeuvre.jsp";
             return (vueReponse);
-        } catch (Exception e) {
+        } 
+        catch (Exception e) 
+        {
             throw e;
         }
     }

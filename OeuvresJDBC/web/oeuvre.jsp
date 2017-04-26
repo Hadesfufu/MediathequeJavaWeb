@@ -18,8 +18,8 @@
             <label class="col-md-3 control-label">Proprietaire : </label>
             <div class="col-sm-6 col-md-3">
                 <select class='form-control' name='lProprietaires' required>
-                    <c:forEach >
-                        <option value=""<c:if test=""> SELECTED</c:if> > </option>
+                    <c:forEach items="${lProprietaires}" var="proprietaire" >
+                        <option value="${proprietaire.getId_proprietaire()}"> ${proprietaire.getNom_proprietaire()} ${proprietaire.getPrenom_proprietaire()} </option>
                     </c:forEach>
                 </select>
             </div>
