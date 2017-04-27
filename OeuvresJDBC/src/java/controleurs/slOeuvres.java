@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -88,12 +90,17 @@ public class slOeuvres extends HttpServlet {
         
         try {
             cnx = Utilitaire.connecter();
-            Statement statement = cnx.createStatement();
-
-            String command = "INSERT INTO oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (12,1,'aaa',200)";
-            statement.executeUpdate(command);
-
             
+
+            String command = "INSERT INTO oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (?,?,?,?)";
+            
+            PreparedStatement pstatement = cnx.prepareStatement(command);
+            pstatement.setInt(1, getMaxIdOeuvre());
+            pstatement.setInt(2, 4);
+            pstatement.setString(3, "ee");
+            pstatement.setInt(4, 5);
+            pstatement.executeUpdate();
+           
             vueReponse = "catalogue.oe";
             return (vueReponse);
         } catch (Exception e) {
@@ -101,6 +108,25 @@ public class slOeuvres extends HttpServlet {
         }
     }
 
+    public int getMaxIdOeuvre(){
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = null;
+        int valeurMax = 0;
+        try {
+            connection = Utilitaire.connecter();
+            ps = connection.prepareStatement("SELECT max(id_oeuvre) as maxId FROM oeuvre");
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                valeurMax = rs.getInt("maxId");
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(Oeuvre.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return valeurMax+1;
+    }
     /**
      * Lit et affiche une oeuvre pour pouvoir la modifier
      * @param request

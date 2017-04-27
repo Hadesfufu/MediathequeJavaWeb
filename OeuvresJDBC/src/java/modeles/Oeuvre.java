@@ -57,25 +57,6 @@ public class Oeuvre {
         this.prix = prix;
     }
     
-    public int getMaxIdOeuvre(){
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Connection connection = null;
-        int valeurMax = 0;
-        try {
-            connection = Utilitaire.connecter();
-            ps = connection.prepareStatement("SELECT max(id_oeuvre) as maxId FROM oeuvre");
-
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                valeurMax = rs.getInt("maxId");
-            }
-            
-        } catch (Exception ex) {
-            Logger.getLogger(Oeuvre.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return valeurMax;
-    }
     // </editor-fold> 
 
     public static Oeuvre getOeuvreByID(int id) {
