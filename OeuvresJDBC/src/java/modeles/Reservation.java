@@ -94,10 +94,9 @@ public class Reservation {
                 reservation.setId_adherent(rs.getInt("id_adherent"));
                 reservation.setDate_reservation(rs.getDate("date_reservation"));
                 reservation.setStatut(rs.getString("statut"));
-               
+                
                 reservation.setOeuvre(Oeuvre.getOeuvreByID(reservation.getId_oeuvre()));
                 reservation.setAdherent(Adherent.getAdherentByID(reservation.getId_adherent()));
-                
                 
                 lReservations.add(reservation);
             }
@@ -119,6 +118,10 @@ public class Reservation {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void supprimer() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
