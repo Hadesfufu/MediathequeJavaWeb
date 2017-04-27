@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -83,9 +84,16 @@ public class slOeuvres extends HttpServlet {
     private String enregistrerOeuvre(HttpServletRequest request) throws Exception {
 
         String vueReponse;
-
+        Connection cnx;
+        
         try {
-//TODO
+            cnx = Utilitaire.connecter();
+            Statement statement = cnx.createStatement();
+
+            String command = "INSERT INTO oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (12,1,'aaa',200)";
+            statement.executeUpdate(command);
+
+            
             vueReponse = "catalogue.oe";
             return (vueReponse);
         } catch (Exception e) {
@@ -106,7 +114,7 @@ public class slOeuvres extends HttpServlet {
         PreparedStatement ps;
         ResultSet rs;
         
-        ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
+//        ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
        
         try 
         {
