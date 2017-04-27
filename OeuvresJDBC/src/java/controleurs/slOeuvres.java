@@ -90,15 +90,28 @@ public class slOeuvres extends HttpServlet {
         
         try {
             cnx = Utilitaire.connecter();
+            String command = null;
+            int idOeuvre = 0;
+            //Integer.parseInt(request.getParameter("txtLogin"));
+            int idProprietaire = Integer.parseInt(request.getParameter("lProprietaires"));
+            String titre = request.getParameter("txtTitre");
+            int prix = Integer.parseInt(request.getParameter("txtPrix"));
             
-
-            String command = "INSERT INTO oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (?,?,?,?)";
-            
+            if(idOeuvre>0)
+            {
+                command = "UPDATE oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (?,?,?,?)";
+            }
+            else
+            {
+               idOeuvre = getMaxIdOeuvre();
+               command = "INSERT INTO oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (?,?,?,?)";
+            }
+             
             PreparedStatement pstatement = cnx.prepareStatement(command);
-            pstatement.setInt(1, getMaxIdOeuvre());
-            pstatement.setInt(2, 4);
-            pstatement.setString(3, "ee");
-            pstatement.setInt(4, 5);
+            pstatement.setInt(1, idOeuvre);
+            pstatement.setInt(2, idProprietaire);
+            pstatement.setString(3, titre);
+            pstatement.setInt(4, prix);
             pstatement.executeUpdate();
            
             vueReponse = "catalogue.oe";
