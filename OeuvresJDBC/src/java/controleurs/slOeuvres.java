@@ -93,27 +93,32 @@ public class slOeuvres extends HttpServlet {
             String command = null;
             int idOeuvre = 0;
             //Integer.parseInt(request.getParameter("txtLogin"));
+            
             int idProprietaire = Integer.parseInt(request.getParameter("lProprietaires"));
             String titre = request.getParameter("txtTitre");
             int prix = Integer.parseInt(request.getParameter("txtPrix"));
             
             if(idOeuvre>0)
             {
-                command = "UPDATE oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (?,?,?,?)";
+                command = "UPDATE oeuvre SET id_proprietaire = ?, titre = ?, prix = ? WHERE id_oeuvre = ?";
+                PreparedStatement pstatement = cnx.prepareStatement(command);
+                pstatement.setInt(1, idProprietaire);
+                pstatement.setString(2, titre);
+                pstatement.setInt(3, prix);
+                pstatement.setInt(4, idOeuvre);
+                pstatement.executeUpdate();
             }
             else
             {
                idOeuvre = getMaxIdOeuvre();
                command = "INSERT INTO oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (?,?,?,?)";
+               PreparedStatement pstatement = cnx.prepareStatement(command);
+               pstatement.setInt(1, idOeuvre);
+               pstatement.setInt(2, idProprietaire);
+               pstatement.setString(3, titre);
+               pstatement.setInt(4, prix);
+               pstatement.executeUpdate();
             }
-             
-            PreparedStatement pstatement = cnx.prepareStatement(command);
-            pstatement.setInt(1, idOeuvre);
-            pstatement.setInt(2, idProprietaire);
-            pstatement.setString(3, titre);
-            pstatement.setInt(4, prix);
-            pstatement.executeUpdate();
-           
             vueReponse = "catalogue.oe";
             return (vueReponse);
         } catch (Exception e) {
