@@ -1,6 +1,7 @@
 package modeles;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class Reservation {
 
     private int id_oeuvre;
     private int id_adherent;
-    private java.util.Date date_reservation;
+    private Date date_reservation;
     private String statut;
     private Adherent adherent;
     private Oeuvre oeuvre;
@@ -68,10 +69,10 @@ public class Reservation {
     public void setId_adherent(int id_adherent) {
         this.id_adherent = id_adherent;
     }
-    public java.util.Date getDate_reservation() {
+    public Date getDate_reservation() {
         return date_reservation;
     }
-    public void setDate_reservation(java.util.Date date_reservation) throws Exception {
+    public void setDate_reservation(Date date_reservation) throws Exception {
         this.date_reservation = date_reservation;
     }
     // </editor-fold> 
@@ -181,6 +182,41 @@ public class Reservation {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void reserver() throws Exception {
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = null;
+
+        try {
+            
+            connection = Utilitaire.connecter();
+            ps = connection.prepareStatement("INSERT INTO reservation (id_oeuvre, id_adherent, date_reservation, statut) VALUES(?,?,?,?)");
+            ps.setInt(1, this.id_oeuvre);
+            ps.setInt(2, this.id_adherent);
+            ps.setDate(3, this.getDate_reservation());
+            ps.setString(4, this.statut);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
     }
 
 }

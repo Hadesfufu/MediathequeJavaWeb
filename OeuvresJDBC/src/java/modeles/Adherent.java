@@ -3,6 +3,8 @@ package modeles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import outils.Utilitaire;
@@ -83,5 +85,47 @@ public class Adherent {
             return adherent;
         }
     }
+    
+    public static List<Adherent>  liste() throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = null;
+        Adherent adherent;
+        List<Adherent> lAdherents = null;
+        try {
+            lAdherents = new ArrayList<Adherent>();
+            
+            connection = Utilitaire.connecter();
+            ps = connection.prepareStatement("SELECT * FROM adherent");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                adherent = new Adherent();
+                adherent.setId_adherent(rs.getInt("id_adherent"));
+                adherent.setNom_adherent(rs.getString("nom_adherent"));
+                adherent.setPrenom_adherent(rs.getString("prenom_adherent"));
+                
+                lAdherents.add(adherent);
+            }
+            return (lAdherents);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    
     
 }

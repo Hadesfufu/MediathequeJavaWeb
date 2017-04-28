@@ -6,6 +6,9 @@
 package controleurs;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -142,7 +145,29 @@ public class slReservation extends HttpServlet {
      */
     private String enregistrerReservation(HttpServletRequest request) throws Exception {
         
+        Reservation reservation;
+        Oeuvre oeuvre;
+        Adherent adherent;
+        String pageReponse;
         try {
+            reservation = new Reservation();
+            HttpSession session = request.getSession(true);
+            int id_adherent = Integer.parseInt(request.getParameter("lstAdherents").toString());
+            int id_oeuvre = Integer.parseInt(request.getParameter("idOeuvre").toString());
+            Date date = Date.valueOf(request.getParameter("txtDate").toString());
+            
+            reservation.setDate_reservation(date);
+            
+            adherent = Adherent.getAdherentByID(id_adherent);
+            oeuvre = Oeuvre.getOeuvreByID(id_oeuvre);
+            
+            reservation.setId_oeuvre(oeuvre.getId_oeuvre());
+            reservation.setId_adherent(adherent.getId_adherent());
+            
+            reservation.setStatut("Attente");
+            
+            reservation.reserver();
+            
             
             return ("listeReservations.res");
         } catch (Exception e) {
@@ -162,8 +187,23 @@ public class slReservation extends HttpServlet {
      * @throws Exception
      */
     private String reserverOeuvre(HttpServletRequest request) throws Exception {
+        
+        Reservation reservation;
+        Oeuvre oeuvre;
+        String pageReponse;
         try {
+            reservation = new Reservation();
             
+            HttpSession session = request.getSession(true);
+            int id_oeuvre = Integer.parseInt(request.getParameter("idOeuvre").toString());
+            reservation.setId_oeuvre(id_oeuvre);
+            
+            oeuvre = Oeuvre.getOeuvreByID(reservation.getId_oeuvre());
+            request.setAttribute("titre", oeuvre.getTitre());
+            request.setAttribute("prix", oeuvre.getPrix());
+            request.setAttribute("idOeuvre", oeuvre.getId_oeuvre());
+            request.setAttribute("lAdherentR", Adherent.liste());
+         
             return ("/reservation.jsp");
         } catch (Exception e) {
             throw e;
