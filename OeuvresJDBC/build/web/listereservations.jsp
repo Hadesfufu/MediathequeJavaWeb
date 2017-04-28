@@ -17,15 +17,13 @@
         <tbody>
              <c:forEach items="${lReservationsR}" var="resa">
                 <tr>
-                    <td>${resa.getOeuvre().getTitre()}</td>
-
-                    <td>${resa.getOeuvre().getTitre()}</td>
+                    <td> ${resa.getOeuvre().getTitre()}</td>
+                    <td> ${resa.getOeuvre().getTitre()}</td>
                     <td>${resa.getStatut()}</td>
+                    <td>${resa.getAdherent().getPrenom_adherent()}</td>
                     <td>${resa.getAdherent().getNom_adherent()}</td>
-                    <td>${oeuvre.getProprietaire().getNom_proprietaire()}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>                  
+                    <td><a class="btn btn-primary" onclick="javascript:if (confirm('Confirmer la réservation ?')){ window.location='confirmerReservation.res?idOeuvre=${resa.getId_oeuvre()}&idAdherent=${resa.getId_adherent()}';}" >Confirmer</a></td>
+                    <td><a class="btn btn-primary" onclick="javascript:if (confirm('Suppression confirmée ?')){ window.location='supprimerReservation.res?idOeuvre=${resa.getId_oeuvre()}&idAdherent=${resa.getId_adherent()}';}" >Supprimer</a></td>                
                 </tr>
             </c:forEach>                     
         </tbody>
