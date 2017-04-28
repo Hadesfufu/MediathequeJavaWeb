@@ -71,7 +71,19 @@ public class slReservation extends HttpServlet {
      */
     private String confirmerReservation(HttpServletRequest request) throws Exception {
 
+        Reservation reservation;
+        String pageReponse;
         try {
+            reservation = new Reservation();
+            HttpSession session = request.getSession(true);
+            int id_adherent = Integer.parseInt(request.getParameter("idAdherent").toString());
+            int id_oeuvre = Integer.parseInt(request.getParameter("idOeuvre").toString());
+            reservation.setId_oeuvre(id_oeuvre);
+            reservation.setId_adherent(id_adherent);
+            
+            reservation.confirmer();
+            
+            //session.setAttribute("", reservation.getStatut());
 
             return ("listeReservations.res");
         } catch (Exception e) {
@@ -81,7 +93,17 @@ public class slReservation extends HttpServlet {
 
     private String supprimerReservation(HttpServletRequest request) throws Exception {
         
+        Reservation reservation;
+        String pageReponse;
         try {
+            reservation = new Reservation();
+            HttpSession session = request.getSession(true);
+            int id_adherent = Integer.parseInt(request.getParameter("idAdherent").toString());
+            int id_oeuvre = Integer.parseInt(request.getParameter("idOeuvre").toString());
+            reservation.setId_oeuvre(id_oeuvre);
+            reservation.setId_adherent(id_adherent);
+            
+            reservation.supprimer();
 
             return ("listeReservations.res");
         } catch (Exception e) {         

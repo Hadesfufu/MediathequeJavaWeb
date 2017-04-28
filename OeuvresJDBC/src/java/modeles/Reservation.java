@@ -119,9 +119,68 @@ public class Reservation {
             }
         }
     }
+    
+    public void confirmer() throws Exception{
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = null;
 
-    public void supprimer() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            
+            connection = Utilitaire.connecter();
+            ps = connection.prepareStatement("UPDATE reservation SET statut='Confirmée' WHERE id_oeuvre=? AND id_adherent=? ");
+            ps.setInt(1, this.id_oeuvre);
+            ps.setInt(2, this.id_adherent);
+            ps.executeUpdate();
+            
+            this.setStatut("Confirmée");
+            
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+    }
+
+    public void supprimer() throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = null;
+
+        try {
+            
+            connection = Utilitaire.connecter();
+            ps = connection.prepareStatement("DELETE FROM reservation WHERE id_oeuvre=? AND id_adherent=? ");
+            ps.setInt(1, this.id_oeuvre);
+            ps.setInt(2, this.id_adherent);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
