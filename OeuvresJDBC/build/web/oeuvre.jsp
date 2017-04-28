@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div  class="col-md-8 col-md-offset-1">
-    <h1 align='center'>${titre}</h1>
-    <form class="form-signin form-horizontal" role="form"  action="enregistrer.oe" method="post">
+    <h1 align='center'>${titre}${Id}</h1>
+    <form class="form-signin form-horizontal" role="form"  action="enregistrer.oe?Id=${oeuvre.getId_oeuvre()}" method="post">
         <div class="form-group">
             <label class="col-md-3 control-label">Titre : </label>
             <div class="col-md-6">
@@ -19,7 +19,7 @@
             <div class="col-sm-6 col-md-3">
                 <select class='form-control' name='lProprietaires' required>
                     <c:forEach items="${lProprietaires}" var="proprietaire" >
-                        <option value="${proprietaire.getId_proprietaire()}" <c:if test="${proprietaire.getId_proprietaire()} == ${oeuvre.getId_proprietaire}"> SELECTED</c:if> > ${proprietaire.getNom_proprietaire()} ${proprietaire.getPrenom_proprietaire()} </option>
+                        <option value="${proprietaire.getId_proprietaire()}" <c:if test="${proprietaire.getId_proprietaire() == oeuvre.getId_proprietaire()}"> SELECTED</c:if> >${proprietaire.getNom_proprietaire()} ${proprietaire.getPrenom_proprietaire()} </option>
                     </c:forEach>
                 </select>
             </div>

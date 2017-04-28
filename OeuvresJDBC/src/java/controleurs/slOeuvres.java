@@ -91,12 +91,13 @@ public class slOeuvres extends HttpServlet {
         try {
             cnx = Utilitaire.connecter();
             String command = null;
-            int idOeuvre = 0;
-            //Integer.parseInt(request.getParameter("txtLogin"));
+            int idOeuvre=0;
+            if(request.getParameter("Id") != "")
+                idOeuvre = Integer.parseInt(request.getParameter("Id"));
             
             int idProprietaire = Integer.parseInt(request.getParameter("lProprietaires"));
             String titre = request.getParameter("txtTitre");
-            int prix = Integer.parseInt(request.getParameter("txtPrix"));
+            float prix = Float.parseFloat(request.getParameter("txtPrix"));
             
             if(idOeuvre>0)
             {
@@ -104,7 +105,7 @@ public class slOeuvres extends HttpServlet {
                 PreparedStatement pstatement = cnx.prepareStatement(command);
                 pstatement.setInt(1, idProprietaire);
                 pstatement.setString(2, titre);
-                pstatement.setInt(3, prix);
+                pstatement.setFloat(3, prix);
                 pstatement.setInt(4, idOeuvre);
                 pstatement.executeUpdate();
             }
@@ -116,7 +117,7 @@ public class slOeuvres extends HttpServlet {
                pstatement.setInt(1, idOeuvre);
                pstatement.setInt(2, idProprietaire);
                pstatement.setString(3, titre);
-               pstatement.setInt(4, prix);
+               pstatement.setFloat(4, prix);
                pstatement.executeUpdate();
             }
             vueReponse = "catalogue.oe";
@@ -158,8 +159,8 @@ public class slOeuvres extends HttpServlet {
         PreparedStatement ps;
         ResultSet rs;
         
-//        ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
-       
+       ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
+        
         try 
         {
             cnx = Utilitaire.connecter();
@@ -176,8 +177,24 @@ public class slOeuvres extends HttpServlet {
 
                 oeuvre.setProprietaire(Proprietaire.getProprietaireByID(oeuvre.getId_proprietaire()));  
             }
-            request.setAttribute("titre", "Modifier l'oeuvre "+request.getParameter("Id")+"");    
+            
+            request.setAttribute("titre", "Modifier l'oeuvre ");    
+            request.setAttribute("Id",request.getParameter("Id"));
             request.setAttribute("oeuvre", oeuvre); 
+            
+            //rempli la drop down liste contenant les proprietaires
+            ps = cnx.prepareStatement("select * from proprietaire");
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+                Proprietaire proprietaire = new Proprietaire();
+                proprietaire.setId_proprietaire(rs.getInt("id_proprietaire"));
+                proprietaire.setNom_proprietaire(rs.getString("nom_proprietaire"));
+                proprietaire.setPrenom_proprietaire(rs.getString("prenom_proprietaire"));
+                
+                lProprietaire.add(proprietaire);
+            }
+            request.setAttribute("lProprietaires", lProprietaire); 
             
             vueReponse = "/oeuvre.jsp";
             return (vueReponse);
@@ -193,18 +210,29 @@ public class slOeuvres extends HttpServlet {
      * @throws Exception
      */
     private String supprimerOeuvre(HttpServletRequest request) throws Exception {
+        Connection cnx;
         String vueReponse;
-        try {
-//TODO
-            vueReponse = "catalogue.oe";           
-            return (vueReponse);  
+        int idOeuvre = Integer.parseInt(request.getParameter("Id"));
+        try 
+        {
+           cnx = Utilitaire.connecter();
+           String command = null;
+           
+           command =  "DELETE FROM oeuvre WHERE id_oeuvre =? ";
+           PreparedStatement pstatement = cnx.prepareStatement(command);
+           pstatement.setInt(1, idOeuvre);
+           pstatement.executeUpdate();
+            
+           vueReponse = "catalogue.oe";           
+           return (vueReponse);  
         } catch (Exception e) {
             erreur = e.getMessage();
-            //if(erreur.contains("FK_RESERVATION_OEUVRE"))
-              //  erreur = "Il n'est pas possible de supprimer l'oeuvre : " + titre + " car elle a été réservée !";            
+//            if(erreur.contains("FK_RESERVATION_OEUVRE"))
+//                erreur = "Il n'est pas possible de supprimer l'oeuvre : " + idOeuvre + " car elle a été réservée !";            
             throw new Exception(erreur);
         }
     }    
+    
     /**
      * Affiche le formulaire vide d'une oeuvre
      * Initialise la liste des propriétaires
@@ -224,6 +252,7 @@ public class slOeuvres extends HttpServlet {
         
         try 
         {
+            //rempli la drop down liste contenant les proprietaires
             cnx = Utilitaire.connecter();
             ps = cnx.prepareStatement("select * from proprietaire");
             rs = ps.executeQuery();
