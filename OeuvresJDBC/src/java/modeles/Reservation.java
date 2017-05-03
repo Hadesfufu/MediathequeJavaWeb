@@ -199,6 +199,7 @@ public class Reservation {
             ps.setDate(3, this.getDate_reservation());
             ps.setString(4, this.statut);
             ps.executeUpdate();
+            
         } catch (Exception e) {
             throw e;
         } finally {

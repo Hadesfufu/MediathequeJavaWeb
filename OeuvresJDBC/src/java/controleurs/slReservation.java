@@ -128,10 +128,10 @@ public class slReservation extends HttpServlet {
             pageReponse = "";
             resa = new Reservation();
             request.setAttribute("lReservationsR", resa.liste());
-            pageReponse = "/liste.jsp";
+            //pageReponse = "/liste.jsp";
             
 
-            return ("/listereservations.jsp");
+            return ("listereservations.jsp");
         } catch (Exception e) {
             throw e;
         }
@@ -169,7 +169,7 @@ public class slReservation extends HttpServlet {
             reservation.reserver();
             
             
-            return ("listeReservations.res");
+            return ("/listeReservations.res");
         } catch (Exception e) {
             erreur = e.getMessage();
             //if(erreur.contains("PRIMARY"))

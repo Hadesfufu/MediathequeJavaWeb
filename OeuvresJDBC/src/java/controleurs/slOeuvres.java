@@ -86,11 +86,10 @@ public class slOeuvres extends HttpServlet {
     private String enregistrerOeuvre(HttpServletRequest request) throws Exception {
 
         String vueReponse;
-        Connection cnx;
+        Oeuvre oeuvre;
         
         try {
-            cnx = Utilitaire.connecter();
-            String command = null;
+            oeuvre = new Oeuvre();
             int idOeuvre=0;
             if(request.getParameter("Id") != "")
                 idOeuvre = Integer.parseInt(request.getParameter("Id"));
@@ -99,53 +98,49 @@ public class slOeuvres extends HttpServlet {
             String titre = request.getParameter("txtTitre");
             float prix = Float.parseFloat(request.getParameter("txtPrix"));
             
+            oeuvre.setId_proprietaire(idProprietaire);
+            oeuvre.setTitre(titre);
+            oeuvre.setPrix(prix);
+
             if(idOeuvre>0)
             {
-                command = "UPDATE oeuvre SET id_proprietaire = ?, titre = ?, prix = ? WHERE id_oeuvre = ?";
-                PreparedStatement pstatement = cnx.prepareStatement(command);
-                pstatement.setInt(1, idProprietaire);
-                pstatement.setString(2, titre);
-                pstatement.setFloat(3, prix);
-                pstatement.setInt(4, idOeuvre);
-                pstatement.executeUpdate();
+                oeuvre.setId_oeuvre(idOeuvre);
+                oeuvre.modifier();
             }
             else
             {
-               idOeuvre = getMaxIdOeuvre();
-               command = "INSERT INTO oeuvre (id_oeuvre, id_proprietaire, titre, prix) VALUES (?,?,?,?)";
-               PreparedStatement pstatement = cnx.prepareStatement(command);
-               pstatement.setInt(1, idOeuvre);
-               pstatement.setInt(2, idProprietaire);
-               pstatement.setString(3, titre);
-               pstatement.setFloat(4, prix);
-               pstatement.executeUpdate();
+               oeuvre.setId_oeuvre(Oeuvre.getMaxIdOeuvre());
+               oeuvre.creer();
             }
+            
             vueReponse = "catalogue.oe";
+            
             return (vueReponse);
+            
         } catch (Exception e) {
             throw e;
         }
     }
 
-    public int getMaxIdOeuvre(){
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Connection connection = null;
-        int valeurMax = 0;
-        try {
-            connection = Utilitaire.connecter();
-            ps = connection.prepareStatement("SELECT max(id_oeuvre) as maxId FROM oeuvre");
-
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                valeurMax = rs.getInt("maxId");
-            }
-            
-        } catch (Exception ex) {
-            Logger.getLogger(Oeuvre.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return valeurMax+1;
-    }
+//    public int getMaxIdOeuvre(){
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//        Connection connection = null;
+//        int valeurMax = 0;
+//        try {
+//            connection = Utilitaire.connecter();
+//            ps = connection.prepareStatement("SELECT max(id_oeuvre) as maxId FROM oeuvre");
+//
+//            rs = ps.executeQuery();
+//            if (rs.next()) {
+//                valeurMax = rs.getInt("maxId");
+//            }
+//            
+//        } catch (Exception ex) {
+//            Logger.getLogger(Oeuvre.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return valeurMax+1;
+//    }
     /**
      * Lit et affiche une oeuvre pour pouvoir la modifier
      * @param request
@@ -155,49 +150,24 @@ public class slOeuvres extends HttpServlet {
     private String modifierOeuvre(HttpServletRequest request) throws Exception 
     {
         String vueReponse;
-        Connection cnx;
-        PreparedStatement ps;
-        ResultSet rs;
-        
-       ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
-        
+        Oeuvre oeuvre;
+
         try 
         {
-            cnx = Utilitaire.connecter();
-            ps = cnx.prepareStatement("select * from oeuvre where id_oeuvre = '" + request.getParameter("Id")+"' ");
-            rs = ps.executeQuery();
-            
-            Oeuvre oeuvre = new Oeuvre();
-            if(rs.next())
-            {
-                oeuvre.setId_oeuvre(rs.getInt("id_oeuvre"));
-                oeuvre.setId_proprietaire(rs.getInt("id_proprietaire"));
-                oeuvre.setTitre(rs.getString("titre"));
-                oeuvre.setPrix(rs.getDouble("prix"));
+            int id_oeuvre = Integer.parseInt(request.getParameter("Id").toString());
+            oeuvre = Oeuvre.getOeuvreByID(id_oeuvre);
 
-                oeuvre.setProprietaire(Proprietaire.getProprietaireByID(oeuvre.getId_proprietaire()));  
-            }
-            
             request.setAttribute("titre", "Modifier l'oeuvre ");    
-            request.setAttribute("Id",request.getParameter("Id"));
+            request.setAttribute("Id",oeuvre.getId_oeuvre());
             request.setAttribute("oeuvre", oeuvre); 
             
             //rempli la drop down liste contenant les proprietaires
-            ps = cnx.prepareStatement("select * from proprietaire");
-            rs = ps.executeQuery();
-            while(rs.next())
-            {
-                Proprietaire proprietaire = new Proprietaire();
-                proprietaire.setId_proprietaire(rs.getInt("id_proprietaire"));
-                proprietaire.setNom_proprietaire(rs.getString("nom_proprietaire"));
-                proprietaire.setPrenom_proprietaire(rs.getString("prenom_proprietaire"));
-                
-                lProprietaire.add(proprietaire);
-            }
-            request.setAttribute("lProprietaires", lProprietaire); 
             
-            vueReponse = "/oeuvre.jsp";
+            request.setAttribute("lProprietaires", Proprietaire.lister()); 
+            
+            vueReponse = "oeuvre.jsp";
             return (vueReponse);
+            
         } catch (Exception e) {
             throw e;
         }
@@ -210,25 +180,25 @@ public class slOeuvres extends HttpServlet {
      * @throws Exception
      */
     private String supprimerOeuvre(HttpServletRequest request) throws Exception {
-        Connection cnx;
+        
         String vueReponse;
+        Oeuvre oeuvre;
         int idOeuvre = Integer.parseInt(request.getParameter("Id"));
+        
         try 
         {
-           cnx = Utilitaire.connecter();
-           String command = null;
-           
-           command =  "DELETE FROM oeuvre WHERE id_oeuvre =? ";
-           PreparedStatement pstatement = cnx.prepareStatement(command);
-           pstatement.setInt(1, idOeuvre);
-           pstatement.executeUpdate();
-            
+           oeuvre = new Oeuvre();
+
+           oeuvre.setId_oeuvre(idOeuvre);
+           oeuvre.supprimer();
+
            vueReponse = "catalogue.oe";           
            return (vueReponse);  
+           
         } catch (Exception e) {
             erreur = e.getMessage();
-//            if(erreur.contains("FK_RESERVATION_OEUVRE"))
-//                erreur = "Il n'est pas possible de supprimer l'oeuvre : " + idOeuvre + " car elle a été réservée !";            
+            if(erreur.contains("FK_RESERVATION_OEUVRE"))
+                erreur = "Il n'est pas possible de supprimer l'oeuvre : " + idOeuvre + " car elle a été réservée !";            
             throw new Exception(erreur);
         }
     }    
@@ -244,31 +214,15 @@ public class slOeuvres extends HttpServlet {
     private String creerOeuvre(HttpServletRequest request) throws Exception 
     {
         String vueReponse;
-        Connection cnx;
-        PreparedStatement ps;
-        ResultSet rs;
-        
-        ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
         
         try 
         {
             //rempli la drop down liste contenant les proprietaires
-            cnx = Utilitaire.connecter();
-            ps = cnx.prepareStatement("select * from proprietaire");
-            rs = ps.executeQuery();
-            while(rs.next())
-            {
-                Proprietaire proprietaire = new Proprietaire();
-                proprietaire.setId_proprietaire(rs.getInt("id_proprietaire"));
-                proprietaire.setNom_proprietaire(rs.getString("nom_proprietaire"));
-                proprietaire.setPrenom_proprietaire(rs.getString("prenom_proprietaire"));
-                
-                lProprietaire.add(proprietaire);
-            }
-            request.setAttribute("lProprietaires", lProprietaire);    
+           
+            request.setAttribute("lProprietaires", Proprietaire.lister());    
             request.setAttribute("titre", "Ajouter une oeuvre");    
 
-            vueReponse = "/oeuvre.jsp";
+            vueReponse = "oeuvre.jsp";
             return (vueReponse);
         } 
         catch (Exception e) 
@@ -294,7 +248,7 @@ public class slOeuvres extends HttpServlet {
             rs = ps.executeQuery();
             if(rs.next())
                 request.getSession(true).setAttribute("userId", request.getParameter("txtLogin"));
-            vueReponse = "/home.jsp";
+            vueReponse = "home.jsp";
             return (vueReponse);
         } catch (Exception e) {
             
@@ -305,7 +259,7 @@ public class slOeuvres extends HttpServlet {
     private String deconnecter(HttpServletRequest request) throws Exception {
         try {
             request.getSession(true).setAttribute("userId", null);
-            return ("/home.jsp");
+            return ("home.jsp");
         } catch (Exception e) {
             throw e;
         }
@@ -319,7 +273,7 @@ public class slOeuvres extends HttpServlet {
      */
         private String login(HttpServletRequest request) throws Exception {
         try {
-            return ("/login.jsp");
+            return ("login.jsp");
         } catch (Exception e) {
             throw e;
         }
@@ -332,28 +286,11 @@ public class slOeuvres extends HttpServlet {
      */
     private String listerOeuvres(HttpServletRequest request) throws Exception {
         
-        Connection cnx;
-        PreparedStatement ps;
-        ResultSet rs;
-        ArrayList<Oeuvre> lOeuvre = new ArrayList<Oeuvre>();
         try {
-            cnx = Utilitaire.connecter();
-            ps = cnx.prepareStatement("select * from oeuvre");
-            rs = ps.executeQuery();
-            while(rs.next()){
-                Oeuvre oeuvre = new Oeuvre();
-                oeuvre.setId_oeuvre(rs.getInt("id_oeuvre"));
-                oeuvre.setId_proprietaire(rs.getInt("id_proprietaire"));
-                oeuvre.setTitre(rs.getString("titre"));
-                oeuvre.setPrix(rs.getDouble("prix"));
-                
-                oeuvre.setProprietaire(Proprietaire.getProprietaireByID(oeuvre.getId_proprietaire()));
-                
-                
-                lOeuvre.add(oeuvre);
-            }
-            request.setAttribute("lOeuvres", lOeuvre);    
-            return ("/catalogue.jsp");
+            
+            request.setAttribute("lOeuvres", Oeuvre.lister());    
+            return ("catalogue.jsp");
+            
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

@@ -3,6 +3,8 @@ package modeles;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import outils.Utilitaire;
@@ -95,6 +97,48 @@ public class Proprietaire {
                 e.printStackTrace();
             }
             return proprietaire;
+        }
+    }
+    
+    public static  List<Proprietaire> lister() throws Exception{
+        
+    
+        Connection cnx = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Proprietaire> lProprietaire = new ArrayList<Proprietaire>();
+        try {
+            cnx = Utilitaire.connecter();
+            ps = cnx.prepareStatement("select * from proprietaire");
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+                Proprietaire proprietaire = new Proprietaire();
+                proprietaire.setId_proprietaire(rs.getInt("id_proprietaire"));
+                proprietaire.setNom_proprietaire(rs.getString("nom_proprietaire"));
+                proprietaire.setPrenom_proprietaire(rs.getString("prenom_proprietaire"));
+                
+                lProprietaire.add(proprietaire);
+            }
+            
+            return lProprietaire;
+            
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (cnx != null) {
+                    cnx.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
